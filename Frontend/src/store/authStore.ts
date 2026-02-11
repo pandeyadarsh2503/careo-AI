@@ -1,56 +1,57 @@
 import { create } from 'zustand';
+import api from '@/lib/axios';
 import { User } from '@/types';
 
 interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
-  login: (email: string, password: string) => void;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  register: (name: string, email: string, password: string) => void;
+  register: (name: string, email: string, password: string) => Promise<void>;
+  loadUser: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   user: null,
-  
-  login: (email: string, password: string) => {
-    // Mock login - replace with API call later
-    console.log('Login attempt:', email, password);
-    
-    // Simulate successful login
+
+  login: async (email, password) => {
+    const res = await api.post('/api/auth/login', { email, password });
+
+    localStorage.setItem('token', res.data.token);
+
     set({
       isAuthenticated: true,
-      user: {
-        id: '1',
-        name: 'John Doe',
-        email: email,
-        role: 'jobseeker',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John',
-      },
+      user: res.data.user,
     });
   },
-  
+
+  register: async (name, email, password) => {
+    const res = await api.post('/api/auth/register', {
+      name,
+      email,
+      password,
+    });
+
+    localStorage.setItem('token', res.data.token);
+
+    set({
+      isAuthenticated: true,
+      user: res.data.user,
+    });
+  },
+
   logout: () => {
-    set({
-      isAuthenticated: false,
-      user: null,
-    });
+    localStorage.removeItem('token');
+    set({ isAuthenticated: false, user: null });
   },
-  
-  register: (name: string, email: string, password: string) => {
-    // Mock registration - replace with API call later
-    console.log('Registration attempt:', name, email, password);
-    
-    // Simulate successful registration
-    set({
-      isAuthenticated: true,
-      user: {
-        id: '1',
-        name: name,
-        email: email,
-        role: 'jobseeker',
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
-      },
-    });
+
+  loadUser: async () => {
+    try {
+      const res = await api.get('/api/auth/me');
+      set({ isAuthenticated: true, user: res.data });
+    } catch {
+      set({ isAuthenticated: false, user: null });
+    }
   },
 }));

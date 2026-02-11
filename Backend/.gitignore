@@ -1,0 +1,29 @@
+# ===== Node modules =====
+node_modules/
+
+# ===== Environment secrets =====
+.env
+.env.*
+.env.local
+
+# ===== Logs =====
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+logs/
+
+# ===== Build outputs =====
+dist/
+build/
+out/
+
+# ===== Editor / OS =====
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ===== Optional local tools =====
+tmp/
+temp/

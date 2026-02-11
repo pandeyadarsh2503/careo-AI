@@ -9,17 +9,34 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
   const register = useAuthStore(state => state.register);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      setError('Passwords do not match');
       return;
     }
-    register(name, email, password);
-    navigate('/dashboard');
+
+    setLoading(true);
+
+    try {
+      await register(name, email, password); // WAIT for backend
+      navigate('/dashboard');               // go only if success
+    } catch (err: any) {
+      setError(
+        err?.response?.data?.message ||
+        'Registration failed'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -29,7 +46,6 @@ export default function Register() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <div className="p-3 bg-gradient-to-r from-primary to-accent rounded-xl">
@@ -40,10 +56,14 @@ export default function Register() {
           <p className="text-muted-foreground">Start your career journey with CareerAI</p>
         </div>
 
-        {/* Form */}
         <div className="bg-card border border-border rounded-xl p-8 shadow-lg">
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Name */}
             <div>
               <label className="block text-sm font-medium mb-2">Full Name</label>
               <div className="relative">
@@ -59,7 +79,6 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Email */}
             <div>
               <label className="block text-sm font-medium mb-2">Email</label>
               <div className="relative">
@@ -75,7 +94,6 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-sm font-medium mb-2">Password</label>
               <div className="relative">
@@ -91,7 +109,6 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Confirm Password */}
             <div>
               <label className="block text-sm font-medium mb-2">Confirm Password</label>
               <div className="relative">
@@ -107,47 +124,15 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Terms */}
-            <label className="flex items-start gap-2 text-sm cursor-pointer">
-              <input type="checkbox" required className="mt-1 rounded border-input" />
-              <span className="text-muted-foreground">
-                I agree to the{' '}
-                <a href="#" className="text-primary hover:underline">Terms of Service</a>
-                {' '}and{' '}
-                <a href="#" className="text-primary hover:underline">Privacy Policy</a>
-              </span>
-            </label>
-
-            {/* Submit */}
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-primary to-accent text-white font-medium rounded-lg hover:shadow-lg transition-all"
+              disabled={loading}
+              className="w-full py-3 bg-gradient-to-r from-primary to-accent text-white font-medium rounded-lg hover:shadow-lg transition-all disabled:opacity-50"
             >
-              Create Account
+              {loading ? 'Creating account...' : 'Create Account'}
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-card text-muted-foreground">Or sign up with</span>
-            </div>
-          </div>
-
-          {/* Social Login */}
-          <div className="grid grid-cols-2 gap-3">
-            <button className="py-3 border border-border rounded-lg hover:bg-muted transition-colors">
-              <span className="text-sm font-medium">Google</span>
-            </button>
-            <button className="py-3 border border-border rounded-lg hover:bg-muted transition-colors">
-              <span className="text-sm font-medium">GitHub</span>
-            </button>
-          </div>
-
-          {/* Login Link */}
           <p className="text-center text-sm text-muted-foreground mt-6">
             Already have an account?{' '}
             <Link to="/login" className="text-primary font-medium hover:underline">
