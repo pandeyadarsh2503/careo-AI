@@ -7,13 +7,28 @@ import { motion } from 'framer-motion';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
   const login = useAuthStore(state => state.login);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    login(email, password);
-    navigate('/dashboard');
+    setError(null);
+    setLoading(true);
+
+    try {
+      await login(email, password);   // WAIT for backend
+      navigate('/dashboard');         // go only if success
+    } catch (err: any) {
+      setError(
+        err?.response?.data?.message ||
+        'Invalid email or password'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -23,7 +38,6 @@ export default function Login() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <div className="p-3 bg-gradient-to-r from-primary to-accent rounded-xl">
@@ -34,10 +48,14 @@ export default function Login() {
           <p className="text-muted-foreground">Sign in to continue your job search</p>
         </div>
 
-        {/* Form */}
         <div className="bg-card border border-border rounded-xl p-8 shadow-lg">
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email */}
             <div>
               <label className="block text-sm font-medium mb-2">Email</label>
               <div className="relative">
@@ -53,7 +71,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-sm font-medium mb-2">Password</label>
               <div className="relative">
@@ -69,47 +86,15 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Forgot Password */}
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="rounded border-input" />
-                <span className="text-muted-foreground">Remember me</span>
-              </label>
-              <a href="#" className="text-primary hover:underline">
-                Forgot password?
-              </a>
-            </div>
-
-            {/* Submit */}
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-primary to-accent text-white font-medium rounded-lg hover:shadow-lg transition-all"
+              disabled={loading}
+              className="w-full py-3 bg-gradient-to-r from-primary to-accent text-white font-medium rounded-lg hover:shadow-lg transition-all disabled:opacity-50"
             >
-              Sign In
+              {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-card text-muted-foreground">Or continue with</span>
-            </div>
-          </div>
-
-          {/* Social Login */}
-          <div className="grid grid-cols-2 gap-3">
-            <button className="py-3 border border-border rounded-lg hover:bg-muted transition-colors">
-              <span className="text-sm font-medium">Google</span>
-            </button>
-            <button className="py-3 border border-border rounded-lg hover:bg-muted transition-colors">
-              <span className="text-sm font-medium">GitHub</span>
-            </button>
-          </div>
-
-          {/* Sign Up Link */}
           <p className="text-center text-sm text-muted-foreground mt-6">
             Don't have an account?{' '}
             <Link to="/register" className="text-primary font-medium hover:underline">

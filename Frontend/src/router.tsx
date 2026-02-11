@@ -8,43 +8,27 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AIInterview from './pages/AIInterview';
 import CareerAdvisor from './pages/CareerAdvisor';
+import ProtectedRoute from './components/ProtectedRoutes';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     children: [
+      { index: true, element: <Home /> },
+      { path: 'jobs', element: <Jobs /> },
+      { path: 'jobs/:id', element: <JobDetails /> },
+      { path: 'login', element: <Login /> },
+      { path: 'register', element: <Register /> },
+
+      // ---- PROTECTED ROUTES BELOW ----
       {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: 'jobs',
-        element: <Jobs />,
-      },
-      {
-        path: 'jobs/:id',
-        element: <JobDetails />,
-      },
-      {
-        path: 'login',
-        element: <Login />,
-      },
-      {
-        path: 'register',
-        element: <Register />,
-      },
-      {
-        path: 'dashboard',
-        element: <Dashboard />,
-      },
-      {
-        path: 'ai-interview',
-        element: <AIInterview />,
-      },
-      {
-        path: 'career',
-        element: <CareerAdvisor />,
+        element: <ProtectedRoute />,
+        children: [
+          { path: 'dashboard', element: <Dashboard /> },
+          { path: 'ai-interview', element: <AIInterview /> },
+          { path: 'career', element: <CareerAdvisor /> },
+        ],
       },
     ],
   },
