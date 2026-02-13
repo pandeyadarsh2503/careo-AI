@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import AIInterview from './pages/AIInterview';
 import CareerAdvisor from './pages/CareerAdvisor';
 import ProtectedRoute from './components/ProtectedRoutes';
+import Resume from './pages/resume';
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
           { path: 'dashboard', element: <Dashboard /> },
           { path: 'ai-interview', element: <AIInterview /> },
           { path: 'career', element: <CareerAdvisor /> },
+          { path: 'resume', element: <Resume /> }
         ],
       },
     ],

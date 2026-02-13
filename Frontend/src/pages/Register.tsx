@@ -28,7 +28,7 @@ export default function Register() {
 
     try {
       await register(name, email, password); // WAIT for backend
-      navigate('/dashboard');               // go only if success
+      navigate('/');               // go only if success
     } catch (err: any) {
       setError(
         err?.response?.data?.message ||

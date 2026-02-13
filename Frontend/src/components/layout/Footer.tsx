@@ -7,7 +7,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold text-gradient">CareerAI</h3>
+            <div className="flex flex-col items-start leading-none">
+            <span className="text-gradient text-[27px] font-bold">
+              careo
+            </span>
+            <span className="text-[10px] font-bold tracking-tight -mt-0">
+              Career, Simplified
+            </span>
+          </div>
             <p className="text-sm text-muted-foreground">
               Your AI-powered job search companion. Find your dream job with intelligent matching and interview prep.
             </p>
@@ -56,7 +63,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 CareerAI. All rights reserved. Built with AI-powered technology.</p>
+          <p>&copy; 2025 careo. All rights reserved. Built with AI-powered technology.</p>
         </div>
       </div>
     </footer>

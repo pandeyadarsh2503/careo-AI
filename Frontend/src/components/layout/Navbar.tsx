@@ -17,10 +17,12 @@ export default function Navbar() {
   };
 
   const navLinks = [
+    { to: '/dashboard', label: 'Dashboard', authRequired: true },
+    { to: '/resume', label: 'Resume' },
     { to: '/jobs', label: 'Jobs' },
     { to: '/ai-interview', label: 'AI Interview' },
     { to: '/career', label: 'Career Advisor' },
-    { to: '/dashboard', label: 'Dashboard', authRequired: true },
+    ,
   ];
 
   return (
